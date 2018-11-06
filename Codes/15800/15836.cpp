@@ -3,7 +3,6 @@ using namespace std;
 
 int main() {
     int m, n, p, q, cnt = 1;
-    freopen("../input.txt", "r", stdin);
     while(scanf("%d %d %d %d", &m, &n, &p, &q) && (m || n || p || q)) {
         int A[m][n], B[p][q], C[m][q];
         memset(C, 0, sizeof(C));
