@@ -32,8 +32,6 @@ int main() {
 		}
 	}
 	ll ans = ind[n - 1][0];
-	for(int i = 0; i < 3; i++) {
-		ans = min(ans, ind[n - 1][i]);
-	}
+	for(int i = 0; i < 3; i++) ans = min(ans, ind[n - 1][i]);
 	printf("%lld", ans);
 }
