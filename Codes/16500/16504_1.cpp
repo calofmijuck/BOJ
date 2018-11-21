@@ -2,14 +2,16 @@
 using namespace std;
 
 int main() {
-    int n, input;
-    scanf("%d", &n);
-    long long ans = 0;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+    int n, in1, in2, in3, in4;
+    cin >> n;
     n *= n;
-    for(int i = 0; i < n; ++i) {
-        scanf("%d", &input);
-        ans += input;
+    long long ans = 0;
+    for(int i = 0; i < n / 4; i++) {
+            cin >> in1 >> in2 >> in3 >> in4;
+            ans += in1 + in2 + in3 + in4;
     }
-    printf("%lld", ans);
+    cout << ans;
     return 0;
 }
