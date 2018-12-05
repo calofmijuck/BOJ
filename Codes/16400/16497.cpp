@@ -8,7 +8,7 @@ int main() {
     scanf("%d", &n);
     for(int i = 0; i < n; ++i) {
         scanf("%d %d", &st, &ed);
-        for(int j = st; j <= ed; ++j)
+        for(int j = st; j < ed; ++j)
             avail[j]++;
     }
     scanf("%d", &k);
