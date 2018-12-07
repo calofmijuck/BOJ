@@ -1,4 +1,4 @@
 test.py
 test.cpp
-a.out
-./Codes/input.txt
+*.out
+Codes/input.txt
