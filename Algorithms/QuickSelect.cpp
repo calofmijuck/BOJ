@@ -6,7 +6,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int arr[505050];
+int arr[5050505];
 
 // paritions the array
 // bool random parameter for randomized pivot
