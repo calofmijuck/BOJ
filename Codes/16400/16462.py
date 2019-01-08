@@ -6,4 +6,4 @@ for i in range(n):
         x = x.replace('0', '9').replace('6', '9')
     sum += int(x)
 
-print(round(sum / n))
+print(round(sum / n + 0.001))
