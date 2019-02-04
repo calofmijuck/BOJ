@@ -1,0 +1,55 @@
+import os
+from termcolor import colored
+
+global perLine
+perLine = 20
+
+def parse(filename):
+    ret = filename.split(".")[0]
+    ret = ret.split("-")[0]
+    ret = ret.split("_")[0]
+    if ret.isdigit():
+        return int(ret)
+    else:
+        raise Exception
+
+def prettyprint(sList, pList):
+    for i in range(len(sList)):
+        if sList[i] in pList:
+            print(colored(str(sList[i]), 'green'), end="\t")
+        else:
+            print(colored(str(sList[i]), 'red'), end="\t")
+        if (i + 1) % perLine == 0:
+            print("")
+    print("")
+
+def solved(filename):
+    solvedList = []
+    f = open(filename, "r")
+    for line in f:
+        for e in line.split(" "):
+            solvedList.append(int(e))
+    solvedList.sort()
+    return solvedList
+
+
+def getProbList():
+    probList = set()
+    for root, dirs, files in os.walk("./Codes", topdown = True):
+        for name in files:
+            try:
+                probList.add(parse(name))
+            except Exception as e:
+                pass
+    probList = list(probList)
+    probList.sort()
+    return probList
+
+
+solvedList = solved("./solved")
+probList = getProbList()
+
+prettyprint(solvedList, probList)
+print("Total No. of Problems: %d" % len(solvedList))
+print("Existing No. of Problems: %d" % len(probList))
+print("Needs to be updated: %d" % (len(solvedList) - len(probList)))
