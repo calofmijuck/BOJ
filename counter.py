@@ -54,10 +54,15 @@ def getProbList(dir):
 
 # Pass the filename that contains solved problems
 solvedList = solved("./solved")
+<<<<<<< HEAD
 
 # Pass the directory that contains the solution codes
 probList = getProbList("./Codes")
 
+=======
+probList = getProbList("./Codes")
+
+>>>>>>> 7b3913daf40906c356dd6b6d49ad7f9d9bbfd1e3
 li = prettyprint(solvedList, probList)
 assert li == probList
 print("Total No. of Problems: %d" % len(solvedList))
