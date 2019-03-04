@@ -14,14 +14,20 @@ def parse(filename):
         raise Exception
 
 def prettyprint(sList, pList):
+    green, red = 0, 0
+    li = []
     for i in range(len(sList)):
         if sList[i] in pList:
             print(colored(str(sList[i]), 'green'), end="\t")
+            green += 1
+            li.append(sList[i])
         else:
             print(colored(str(sList[i]), 'red'), end="\t")
+            red += 1
         if (i + 1) % perLine == 0:
             print("")
     print("")
+    return li
 
 def solved(filename):
     solvedList = []
@@ -33,9 +39,9 @@ def solved(filename):
     return solvedList
 
 
-def getProbList():
+def getProbList(dir):
     probList = set()
-    for root, dirs, files in os.walk("./Codes", topdown = True):
+    for root, dirs, files in os.walk(dir, topdown = True):
         for name in files:
             try:
                 probList.add(parse(name))
@@ -47,9 +53,10 @@ def getProbList():
 
 
 solvedList = solved("./solved")
-probList = getProbList()
+probList = getProbList("./Codes")
 
-prettyprint(solvedList, probList)
+li = prettyprint(solvedList, probList)
+assert li == probList
 print("Total No. of Problems: %d" % len(solvedList))
 print("Existing No. of Problems: %d" % len(probList))
 print("Needs to be updated: %d" % (len(solvedList) - len(probList)))
