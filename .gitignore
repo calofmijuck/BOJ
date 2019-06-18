@@ -1,4 +1,7 @@
 test.py
 test.cpp
 *.out
+input.txt
 Codes/input.txt
+solved
+submit.py

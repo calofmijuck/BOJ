@@ -25,7 +25,7 @@ int main() {
                 dp[i][i + k] = max(card[i] + sum[i + 1][i + k] - dp[i + 1][i + k], card[i + k] + sum[i][i + k - 1] - dp[i][i + k - 1]);
             }
         }
-        cout << dp[0][n - 1];
+        cout << dp[0][n - 1] << '\n';
     }
     return 0;
 }
