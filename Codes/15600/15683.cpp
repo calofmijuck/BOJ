@@ -4,12 +4,19 @@ using namespace std;
 typedef pair<int, int> pii;
 
 int dx[4] = {0, 1, 0, -1}, dy[4] = {1, 0, -1, 0};
-int one[1] = {0}, two[2] = {0, 2}, three[2] = {0, 1}, four[3] = {0, 1, 2}, five[4] = {0, 1, 2, 3};
+vector<vector<int>> dir = {{0}, {0, 2}, {0, 1}, {0, 1, 2}, {0, 1, 2, 3}};
 vector<pii> cctv;
 vector<vector<int>> mp;
 int n, m;
 
-void mark(vector<vector<int>>& mp, int x, int y, int state);
+void mark(vector<vector<int>>& mp, int x, int y, int state) {
+    int nx = x + dx[state], ny = y + dy[state];
+    while(checkRange(nx, ny) && mp[nx][ny] != 6) {
+        if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
+        nx += dx[state];
+        ny += dy[state];
+    }
+}
 
 void nextState(vector<int>& s) {
     int len = cctv.size() - 1;
@@ -28,7 +35,6 @@ bool checkRange(int x, int y) {
     return 0 <= x && x < n && 0 <= y && y < m;
 }
 
-
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
     cin >> n >> m;
@@ -41,15 +47,15 @@ int main() {
                 cctv.push_back({i, j});
         }
     }
-    int len = cctv.size(), ans = 0x7fffffff;
-    if(len == 0) {
-        int cnt = 0;
-        for(int i = 0; i < n; ++i) {
-            for(int j = 0; j < m; ++j) {
-                if(mp[i][j] == 0) cnt++;
-            }
+    int cnt = 0;
+    for(int i = 0; i < n; ++i) {
+        for(int j = 0; j < m; ++j) {
+            if(mp[i][j] == 0) cnt++;
         }
-        cout << cnt;
+    }
+    int len = cctv.size(), ans = cnt;
+    if(len == 0) {
+        cout << ans;
         return 0;
     }
     vector<int> state(len, 0);
@@ -60,7 +66,7 @@ int main() {
             pii tv = cctv[idx];
             int x = tv.first, y = tv.second;
             int st = state[idx];
-            mark(curr, x, y, st);
+            for(int d : dir[mp[x][y] - 1]) mark(curr, x, y, (d + st) % 4);
         }
         int cnt = 0;
         for(int i = 0; i < n; ++i) {
@@ -73,59 +79,4 @@ int main() {
     }
     cout << ans;
     return 0;
-}
-
-void mark(vector<vector<int>>& mp, int x, int y, int state) {
-    switch(mp[x][y]) {
-        case 1:
-            for(int d : one) {
-                int nx = x + dx[(d + state) % 4], ny = y + dy[(d + state) % 4];
-                while(checkRange(nx, ny) && mp[nx][ny] != 6) {
-                    if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
-                    nx += dx[(d + state) % 4];
-                    ny += dy[(d + state) % 4];
-                }
-            }                
-            break;
-        case 2:
-            for(int d : two) {
-                int nx = x + dx[(d + state) % 4], ny = y + dy[(d + state) % 4];
-                while(checkRange(nx, ny) && mp[nx][ny] != 6) {
-                    if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
-                    nx += dx[(d + state) % 4];
-                    ny += dy[(d + state) % 4];
-                }
-            }      
-            break;
-        case 3:
-            for(int d : three) {
-                int nx = x + dx[(d + state) % 4], ny = y + dy[(d + state) % 4];
-                while(checkRange(nx, ny) && mp[nx][ny] != 6) {
-                    if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
-                    nx += dx[(d + state) % 4];
-                    ny += dy[(d + state) % 4];
-                }
-            }   
-            break;
-        case 4:
-            for(int d : four) {
-                int nx = x + dx[(d + state) % 4], ny = y + dy[(d + state) % 4];
-                while(checkRange(nx, ny) && mp[nx][ny] != 6) {
-                    if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
-                    nx += dx[(d + state) % 4];
-                    ny += dy[(d + state) % 4];
-                }
-            }   
-            break;
-        case 5:
-            for(int d : five) {
-                int nx = x + dx[(d + state) % 4], ny = y + dy[(d + state) % 4];
-                while(checkRange(nx, ny) && mp[nx][ny] != 6) {
-                    if(mp[nx][ny] <= 0) mp[nx][ny] = -1;
-                    nx += dx[(d + state) % 4];
-                    ny += dy[(d + state) % 4];
-                }
-            }   
-            break;
-    }
 }
