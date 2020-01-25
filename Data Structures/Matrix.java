@@ -7,11 +7,13 @@ public class Matrix {
 
     // n x n zero matrix
     public Matrix(int n) {
-        this(0, 0);
+        this(n, n);
     }
 
     // row x col zero matrix
     public Matrix(int row, int col) {
+        if (row <= 0 || col <= 0)
+            throw new IllegalArgumentException();
         mat = new double[row][col];
         this.row = row;
         this.col = col;
@@ -19,13 +21,21 @@ public class Matrix {
 
     // initialize with 2d double array
     public Matrix(double[][] arr) {
+        if (arr == null || arr.length == 0)
+            throw new IllegalArgumentException();
         mat = arr;
         row = arr.length;
         col = arr[0].length;
+        for (int i = 1; i < row; ++i) {
+            if (col != arr[i].length)
+                throw new IllegalArgumentException();
+        }
     }
 
     // diagonal matrix
     public Matrix(double[] arr) {
+        if (arr == null || arr.length == 0)
+            throw new IllegalArgumentException();
         mat = new double[arr.length][arr.length];
         for (int i = 0; i < arr.length; ++i)
             mat[i][i] = arr[i];
@@ -35,6 +45,8 @@ public class Matrix {
 
     // n x n identity matrix
     public static Matrix identity(int n) {
+        if (n <= 0)
+            throw new IllegalArgumentException();
         double[] arr = new double[n];
         Arrays.fill(arr, 1);
         return new Matrix(arr);
@@ -52,26 +64,34 @@ public class Matrix {
 
     // get (i, j)-element
     public double get(int i, int j) {
+        if (i < 0 || i >= row || j < 0 || j >= col)
+            throw new IndexOutOfBoundsException();
         return mat[i][j];
     }
 
     // set (i, j)-element
     public void set(int i, int j, int val) {
+        if (i < 0 || i >= row || j < 0 || j >= col)
+            throw new IndexOutOfBoundsException();
         mat[i][j] = val;
     }
 
     // get i-th row vector
-    public Vector getRow(int i) {
-        return new Vector(mat[i]);
+    public double[] getRow(int i) {
+        if (i < 0 || i >= row)
+            throw new IndexOutOfBoundsException();
+        return mat[i];
     }
 
     // get i-th column vector
-    public Vector getCol(int j) {
+    public double[] getCol(int j) {
+        if (j < 0 || j >= col)
+            throw new IndexOutOfBoundsException();
         double[] arr = new double[row];
         for (int i = 0; i < row; ++i) {
             arr[i] = mat[i][j];
         }
-        return new Vector(arr);
+        return arr;
     }
 
     // toString
@@ -91,11 +111,11 @@ public class Matrix {
     public boolean equals(Object o) {
         if (o instanceof Matrix) {
             Matrix m = (Matrix) o;
+            if (row != m.rowSize() || col != m.colSize())
+                return false;
             for (int i = 0; i < row; ++i) {
-                for (int j = 0; j < col; ++j) {
-                    if (mat[i][j] != m.get(i, j))
-                        return false;
-                }
+                if (!Arrays.equals(mat[i], m.getRow(i)))
+                    return false;
             }
             return true;
         }
@@ -129,7 +149,11 @@ public class Matrix {
 
     // matrix transpose
     public Matrix transpose() {
-        return null;
+        double[][] arr = new double[col][row];
+        for (int i = 0; i < col; ++i) {
+            arr[i] = this.getCol(i);
+        }
+        return new Matrix(arr);
     }
 
     // matrix exponentiation
@@ -139,7 +163,13 @@ public class Matrix {
 
     // trace of matrix
     public double trace() {
-        return 0;
+        if (row != col) {
+            throw new IllegalStateException();
+        }
+        double ret = 0;
+        for (int i = 0; i < row; ++i)
+            ret += mat[i][i];
+        return ret;
     }
 
     // absolute value
