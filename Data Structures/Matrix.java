@@ -70,7 +70,7 @@ public class Matrix {
     }
 
     // set (i, j)-element
-    public void set(int i, int j, int val) {
+    public void set(int i, int j, double val) {
         if (i < 0 || i >= row || j < 0 || j >= col)
             throw new IndexOutOfBoundsException();
         mat[i][j] = val;
@@ -124,27 +124,68 @@ public class Matrix {
 
     // matrix addition
     public Matrix add(Matrix m) {
-        return null;
+        if (m.rowSize() != row || m.colSize() != col) {
+            throw new IllegalStateException();
+        }
+        Matrix ret = new Matrix(row, col);
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < row; ++j)
+                ret.set(i, j, mat[i][j] + m.get(i, j));
+        }
+        return ret;
     }
 
     // matrix subtraction
     public Matrix sub(Matrix m) {
-        return null;
+        if (m.rowSize() != row || m.colSize() != col) {
+            throw new IllegalStateException();
+        }
+        Matrix ret = new Matrix(row, col);
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < row; ++j)
+                ret.set(i, j, mat[i][j] - m.get(i, j));
+        }
+        return ret;
     }
 
     // matrix constant multiplication
     public Matrix mul(double d) {
-        return null;
+        Matrix ret = new Matrix(row, col);
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < row; ++j)
+                ret.set(i, j, mat[i][j] * d);
+        }
+        return ret;
     }
 
     // matrix and vector multiplication
     public Vector mul(Vector v) {
-        return null;
+        if (col != v.size()) {
+            throw new IllegalStateException();
+        }
+        double[] arr = new double[row];
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j)
+                arr[i] += mat[i][j] * v.get(j);
+        }
+        return new Vector(arr);
     }
 
     // matrix multiplication
     public Matrix matMul(Matrix m) {
-        return null;
+        if (col != m.rowSize()) {
+            throw new IllegalStateException();
+        }
+        Matrix ret = new Matrix(row, m.colSize());
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < m.colSize(); ++j) {
+                double tmp = 0;
+                for (int k = 0; k < col; ++k)
+                    tmp += mat[i][k] + m.get(k, j);
+                ret.set(i, j, tmp);
+            }
+        }
+        return ret;
     }
 
     // matrix transpose
@@ -158,7 +199,21 @@ public class Matrix {
 
     // matrix exponentiation
     public Matrix pow(int n) {
-        return null;
+        if (row != col) {
+            throw new IllegalStateException();
+        }
+        return pow(this, n);
+    }
+
+    private Matrix pow(Matrix m, int n) {
+        if (n == 0)
+            return Matrix.identity(row);
+        else if (n == 1)
+            return this;
+        else if (n % 2 == 0)
+            return pow(m.matMul(m), n / 2);
+        else
+            return m.matMul(pow(m, n - 1));
     }
 
     // trace of matrix
@@ -170,11 +225,6 @@ public class Matrix {
         for (int i = 0; i < row; ++i)
             ret += mat[i][i];
         return ret;
-    }
-
-    // absolute value
-    public double abs() {
-        return 0.0;
     }
 
     // (Hard) determinant
