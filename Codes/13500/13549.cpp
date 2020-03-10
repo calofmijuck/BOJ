@@ -11,7 +11,10 @@ int main() {
 		return 0;
 	}
 	if(n == 0) d[n + 1] = 1;
-	else d[n - 1] = d[n + 1] = 1;
+	else if(n == 1) {
+        d[n + 1] = 0;
+        d[n - 1] = 1;
+    } else d[n - 1] = d[n + 1] = 1;
     int idx = n - 2, tmp = 2;
     while(idx >= 0) {
         d[idx] = tmp;
