@@ -1,26 +1,20 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <stdio.h>
 
-bool han[1010];
-int ans[1010];
+int han(int i) {
+	if(i < 100) return 1;
+	if(i == 1000) return 0;
+	int hundred = i / 100;
+	int ten = (i / 10) % 10;
+	int one = i % 10;
+	if(2 * ten == hundred + one)
+		return 1;
+	return 0;
+}
 
 int main() {
-    int n;
-    scanf("%d", &n);
-    if(n <= 99) {
-        printf("%d", n);
-        return 0;
-    }
-    int curr = 99;
-    for(int i = 100; i < 1000; ++i) {
-        string str = to_string(i);
-        if(str.at(1) - str.at(0) == str.at(2) - str.at(1)) {
-            han[i] = true;
-            curr++;
-        }
-        ans[i] = curr;
-    }
-    ans[1000] = curr;
-    printf("%d", ans[n]);
-    return 0;
+	int n, ans = 0;
+	scanf("%d", &n);
+	for(int i = 1; i <= n; ++i)
+		ans += han(i);
+	printf("%d", ans);
 }
