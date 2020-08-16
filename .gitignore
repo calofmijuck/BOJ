@@ -8,3 +8,6 @@ submit.py
 .vscode/*
 submit
 submit.cpp
+*.exe
+in
+out
