@@ -1,30 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// dp[i][j][k] : left i, right j, k steps
+#define MAX 0x3f3f3f3f
+
 int dp[5][5][101010];
-int step[101010], i;
-
-int solve(int l, int r, int k) {
-    if(k == i - 1) return 0;
-    int& ret = dp[l][r][k];
-    if(ret != -1) return ret;
-
-    if(l == step[k] || r == step[k]) return 1 + solve(l, r, k + 1);
-
-    int x1 = (step[k] - l) % 2 ? 3 : 4, x2 = (step[k] - r) % 2 ? 3 : 4;
-    if(l == 0) x1 = 2;
-    if(r == 0) x2 = 2;
-    x1 += solve(step[k], r, k + 1);
-    x2 += solve(l, step[k], k + 1);
-
-    return ret = min(x1, x2);
-}
+int step[101010], i = 1;
 
 int main() {
-    memset(dp, -1, sizeof(dp));
+    memset(dp, 0x3f, sizeof(dp));
     while(scanf("%d", step + i) && step[i++]);
 
-    printf("%d", solve(0, 0, 0));
+    dp[0][0][0] = 0;
+    for(int k = 1; k < i; ++k) {
+        for(int l = 0; l < 5; ++l) {
+            for(int r = 0; r < 5; ++r) {
+                if(dp[l][r][k - 1] == MAX) continue;
+
+                int p = (step[k] == l) ? 1 : (step[k] - l) % 2 ? 3 : 4;
+                if(l == 0) p = 2;
+                dp[step[k]][r][k] = min(dp[step[k]][r][k], dp[l][r][k - 1] + p);
+
+                int q = (step[k] == r) ? 1 : (step[k] - r) % 2 ? 3 : 4;
+                if(r == 0) q = 2;
+                dp[l][step[k]][k] = min(dp[l][step[k]][k], dp[l][r][k - 1] + q);
+            }
+        }
+    }
+    int ans = MAX;
+    for(int l = 0; l < 5; ++l) {
+        for(int r = 0; r < 5; ++r) {
+            ans = min(ans, dp[l][r][i - 2]);
+        }
+    }
+    printf("%d", ans);
     return 0;
 }
