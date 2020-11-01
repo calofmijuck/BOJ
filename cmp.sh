@@ -1,2 +1,2 @@
-g++ submit.cpp -std=c++14 -o submit
+g++ submit.cpp -Wall -std=c++17 -o submit
 ./submit
