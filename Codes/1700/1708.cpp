@@ -34,13 +34,14 @@ pll find_lowermost_point(vector<pll>& points) {
 vector<pll> graham_scan(const vector<pll>& points) {
     vector<pll> convex_hull;
     for(pll curr : points) {
-        bool right_turn = true;
-        while(convex_hull.size() > 1 && right_turn) {
+        while(convex_hull.size() > 1) {
             pll top = convex_hull.back();
             pll next_to_top = convex_hull[convex_hull.size() - 2];
-            right_turn = ccw(next_to_top, top, curr) <= 0;
+            bool right_turn = ccw(next_to_top, top, curr) <= 0;
             if(right_turn)
                 convex_hull.pop_back();
+            else
+                break;
         }
         convex_hull.push_back(curr);
     }
