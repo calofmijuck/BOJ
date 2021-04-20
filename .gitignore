@@ -1,13 +1,27 @@
+# editor config
+.vscode/*
+
+# testing sources
 test.py
 test.cpp
-*.out
-input.txt
-Codes/input.txt
-solved
+Test.java
+
+# Submission sources
 submit.py
-.vscode/*
-submit
 submit.cpp
+Main.java
+
+# compiled files
+submit
+*.out
 *.exe
+*.class
+
+# input / output files
+input.txt
+output.txt
 in
 out
+
+# solved problem list
+solved
