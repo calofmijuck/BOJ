@@ -45,7 +45,6 @@ queue<triple> bfs(queue<triple> &ripe) {
                 mark_ripe(next);
                 next_ripe.push(next);
             }
-                       
         }
     }
     return next_ripe;
