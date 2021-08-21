@@ -2,22 +2,22 @@
 using namespace std;
 
 typedef pair<int, int> pii;
+typedef long double ld;
 
 void init_point(pii& p) {
     cin >> p.first >> p.second;
 }
 
-bool check_colinear(pii& a, pii& b, pii& c) {    
-    return (b.second - a.second) * (c.first - b.first) == (c.second - b.second) * (b.first - a.first) 
+bool check_colinear(pii& a, pii& b, pii& c) {
+    return (b.second - a.second) * (c.first - b.first) == (c.second - b.second) * (b.first - a.first);
 }
 
-double dist(pii& a, pii& b) {
-    return hypot(b.first - a.first, b.second - a.second);
+ld dist(pii& a, pii& b) {
+    return hypot((ld) b.first - a.first, (ld) b.second - a.second);
 }
 
-pii find_last_point(pii& a, pii& b) {
-    // todo
-    return make_pair(0, 0);
+ld perimeter(pii& a, pii& b, pii& c) {
+    return 2 * (dist(a, b) + dist(b, c));
 }
 
 int main() {
@@ -31,6 +31,12 @@ int main() {
         cout << -1;
         return 0;
     }
-    // AB is diagonal
+
+    ld perimeters[3] = {
+        perimeter(a, c, b), perimeter(a, b, c), perimeter(b, a, c)
+    };
+    sort(perimeters, perimeters + 3);
+
+    cout << fixed << setprecision(12) << perimeters[2] - perimeters[0];
     return 0;
 }
