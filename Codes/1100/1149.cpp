@@ -1,37 +1,34 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
-ll min(ll a, ll b) {
-	return (a > b) ? b : a;
+vector<int> red(1), green(1), blue(1);
+
+void read_prices(int n) {
+    for (int i = 0; i < n; ++i) {
+        int r, g, b;
+        cin >> r >> g >> b;
+        red.push_back(r);
+        green.push_back(g);
+        blue.push_back(b);
+    }
+}
+
+int find_min_cost(int n) {
+    vector<int> last_red(n + 1), last_green(n + 1), last_blue(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        last_red[i] = red[i] + min(last_green[i - 1], last_blue[i - 1]);
+        last_green[i] = green[i] + min(last_red[i - 1], last_blue[i - 1]);
+        last_blue[i] = blue[i] + min(last_red[i - 1], last_green[i - 1]);
+    }
+    return min({last_red[n], last_green[n], last_blue[n]});
 }
 
 int main() {
-	int n;
-	scanf("%d", &n);
-	int arr[n][3];
-	ll ind[n][3] = {0};
-	for(int i = 0; i < n; i++) {
-		for(int j = 0; j < 3; j++) {
-			scanf("%d", &arr[i][j]);
-		}
-	}
-	for(int i = 0; i < 3; i++) {
-		ind[0][i] = arr[0][i];
-	}
-	for(int i = 0; i < n - 1; i++) {
-		for(int j = 0; j < 3; j++) {
-			for(int k = 0; k < 3; k++) {
-				if(j == k) continue;
-				if(ind[i + 1][k] == 0) {
-					ind[i + 1][k] = ind[i][j] + arr[i + 1][k];
-				} else {
-					ind[i + 1][k] = min(ind[i + 1][k], ind[i][j] + arr[i + 1][k]);
-				}
-			}
-		}
-	}
-	ll ans = ind[n - 1][0];
-	for(int i = 0; i < 3; i++) ans = min(ans, ind[n - 1][i]);
-	printf("%lld", ans);
+    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    int n;
+    cin >> n;
+    read_prices(n);
+    int minimum = find_min_cost(n);
+    cout << minimum;
+    return 0;
 }
