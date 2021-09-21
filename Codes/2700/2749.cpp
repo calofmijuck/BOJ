@@ -1,37 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
-#define MOD 1000000
 
-long long A[2][2] = {1, 1, 1, 0}, B[2][2] = {1, 0, 0, 1}, tmp[2][2];
+typedef long long ll;
+typedef vector<vector<int>> Matrix;
 
-void solve(long long n) {
-    long long exp = n;
-    while(exp > 0) {
-        if(exp & 1) {
-            tmp[0][0] = (A[0][0] * B[0][0] + A[0][1] * B[1][0]) % MOD;
-            tmp[0][1] = (A[0][0] * B[0][1] + A[0][1] * B[1][1]) % MOD;
-            tmp[1][0] = (A[1][0] * B[0][0] + A[1][1] * B[1][0]) % MOD;
-            tmp[1][1] = (A[1][0] * B[0][1] + A[1][1] * B[1][1]) % MOD;
-            for(int i = 0; i < 2; ++i) {
-                for(int j = 0; j < 2; ++j) B[i][j] = tmp[i][j];
+const int MOD = 1000000;
+
+Matrix matmul(Matrix A, Matrix B) {
+    Matrix ret(A.size(), vector<int>(A.size()));
+    for (int i = 0; i < (int) A.size(); ++i) {
+        for (int j = 0; j < (int) B.size(); ++j) {
+            for (int k = 0; k < (int) A.size(); ++k) {
+                ret[i][j] = (ret[i][j] + (ll) A[i][k] * B[k][j]) % MOD;
             }
         }
-        exp >>= 1;
-        tmp[0][0] = (A[0][0] * A[0][0] + A[0][1] * A[1][0]) % MOD;
-        tmp[0][1] = (A[0][0] * A[0][1] + A[0][1] * A[1][1]) % MOD;
-        tmp[1][0] = (A[1][0] * A[0][0] + A[1][1] * A[1][0]) % MOD;
-        tmp[1][1] = (A[1][0] * A[0][1] + A[1][1] * A[1][1]) % MOD;
-        for(int i = 0; i < 2; ++i) {
-            for(int j = 0; j < 2; ++j) A[i][j] = tmp[i][j];
-        }
     }
+    return ret;
 }
 
+Matrix pow(Matrix M, ll exponent) {
+    Matrix result = {{1, 0}, {0, 1}};
+    while (exponent > 0) {
+        if (exponent & 1) {
+            result = matmul(M, result);
+        }
+        exponent >>= 1;
+        M = matmul(M, M);
+    }
+    return result;
+}
 
 int main() {
-    long long n;
-    scanf("%lld", &n);
-    solve(n);
-    printf("%lld", B[1][0]);
+    ll n;
+    cin >> n;
+
+    Matrix A = {{1, 1}, {1, 0}};
+    Matrix result = pow(A, n);
+    cout << result[1][0];
     return 0;
 }
