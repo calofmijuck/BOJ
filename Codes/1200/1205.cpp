@@ -6,25 +6,26 @@ int main() {
     int n, score, p;
     cin >> n >> score >> p;
 
-    vector<int> ranking(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> ranking[i];
-    }
-
     if (n == 0) {
         cout << 1;
         return 0;
     }
 
-    if (score <= ranking.back() && n == p) {
-        cout << - 1;
+    vector<int> ranking(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> ranking[i];
+    }
+
+    if (n == p && score <= ranking.back()) {
+        cout << -1;
         return 0;
     }
 
     int rank = n - 1;
-    while (ranking[rank] <= score) {
+    while (rank >= 0 && ranking[rank] <= score) {
         rank--;
     }
+
     cout << rank + 2;
     return 0;
 }
