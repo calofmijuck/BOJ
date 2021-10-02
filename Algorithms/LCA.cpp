@@ -3,69 +3,82 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> adj[50050];
-int depth[50050], parent[50050][20];
-bool visited[50050];
+#define MAX_N 50050
 
-void dfs(int v, int d) { // dfs with depth
-    visited[v] = true;
-    depth[v] = d; // mark depth
-    for(int next : adj[v]) {
-        if(visited[next]) continue;
-        parent[next][0] = v; // 2^0-parent of vertex next is the current vertex v
-        dfs(next, d + 1);
+vector<int> adj[MAX_N];
+int node_depth[MAX_N], parent[MAX_N][20];
+bool visited[MAX_N];
+
+void dfs(int current, int depth) {
+    visited[current] = true;
+    node_depth[current] = depth;
+    for (int next : adj[current]) {
+        if (visited[next]) {
+            continue;
+        }
+        parent[next][0] = current; // 2^0-parent of vertex next is the current vertex
+        dfs(next, depth + 1);
     }
 }
 
-void preprocess(int n) {
+void preprocess(int n) { // sparse table
     parent[1][0] = 1; // parent of root as root
-    for(int j = 1; j < 20; ++j) {
-        for(int i = 1; i <= n; ++i)
-            parent[i][j] = parent[parent[i][j - 1]][j - 1]; 
-        // 2^j parent of i is equal to 2^(j-1) parent of [2^(j-1) parent of i]
-        // 2^(j-1) + 2^(j-1) = 2^j
+    for (int j = 1; j < 20; ++j) {
+        for (int i = 1; i <= n; ++i) {
+            parent[i][j] = parent[parent[i][j - 1]][j - 1];
+            // 2^j parent of i is equal to 2^(j-1) parent of [2^(j-1) parent of i]
+        }
     }
 }
 
 int lca(int u, int v) {
-    if(depth[u] < depth[v]) {
-        int tmp = v; v = u; u = tmp;
+    if (node_depth[u] < node_depth[v]) {
+        swap(u, v);
     }
-    int d = depth[u] - depth[v]; // find depth difference
-    int j = 0;
-    while(d > 0) { // move to same depth
-        if(d & 1)
-            u = parent[u][j];
-        j++;
-        d >>= 1;
+
+    int diff = node_depth[u] - node_depth[v];
+    int power = 0;
+    while (diff > 0) { // move to same depth
+        if (diff & 1) {
+            u = parent[u][power];
+        }
+        power++;
+        diff >>= 1;
     }
-    if(u == v) // if same, return
+
+    if (u == v) {
         return u;
-    while(parent[u][0] != parent[v][0]) {
-        int j = 0;
-        while(parent[u][j] != parent[v][j]) // go up the tree to find matching parent
-            j++;
-        j--;
-        u = parent[u][j];
-        v = parent[v][j];
+    }
+
+    while (parent[u][0] != parent[v][0]) {
+        int power = 0;
+        while (parent[u][power] != parent[v][power]) { // go up the tree to find matching parent
+            power++;
+        }
+        power--;
+        u = parent[u][power];
+        v = parent[v][power];
     }
     return parent[u][0];
 }
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    int n, m;
-    cin >> n; // number of vertices
-    for(int i = 0; i < n - 1; ++i) {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n - 1; ++i) {
         int u, v;
-        cin >> u >> v; // edges
+        cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
-    dfs(1, 0); // with node 1 as root
-    preprocess(n); // find 2^k-parents
-    cin >> m; // m queries
-    for(int i = 0; i < m; ++i) {
+
+    dfs(1, 0);
+    preprocess(n);
+
+    int m;
+    cin >> m;
+    for (int i = 0; i < m; ++i) {
         int u, v;
         cin >> u >> v;
         cout << lca(u, v) << '\n';
