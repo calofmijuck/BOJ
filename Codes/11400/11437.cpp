@@ -1,67 +1,81 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> adj[50050];
-int depth[50050], parent[50050][20];
-bool visited[50050];
+#define MAX_N 50050
 
-void dfs(int v, int d) {
-    visited[v] = true;
-    depth[v] = d;
-    for(int next : adj[v]) {
-        if(visited[next]) continue;
-        parent[next][0] = v;
-        dfs(next, d + 1);
+vector<int> adj[MAX_N];
+int node_depth[MAX_N], parent[MAX_N][20];
+bool visited[MAX_N];
+
+void dfs(int current, int depth) {
+    visited[current] = true;
+    node_depth[current] = depth;
+    for (int next : adj[current]) {
+        if (visited[next]) {
+            continue;
+        }
+        parent[next][0] = current;
+        dfs(next, depth + 1);
     }
 }
 
 void preprocess(int n) {
     parent[1][0] = 1;
-    for(int j = 1; j < 20; ++j) {
-        for(int i = 1; i <= n; ++i)
+    for (int j = 1; j < 20; ++j) {
+        for (int i = 1; i <= n; ++i) {
             parent[i][j] = parent[parent[i][j - 1]][j - 1];
+        }
     }
 }
 
 int lca(int u, int v) {
-    if(depth[u] < depth[v]) {
-        int tmp = v; v = u; u = tmp;
+    if (node_depth[u] < node_depth[v]) {
+        swap(u, v);
     }
-    int d = depth[u] - depth[v];
-    int j = 0;
-    while(d > 0) {
-        if(d & 1)
-            u = parent[u][j];
-        j++;
-        d >>= 1;
+
+    int diff = node_depth[u] - node_depth[v];
+    int power = 0;
+    while (diff > 0) {
+        if (diff & 1) {
+            u = parent[u][power];
+        }
+        power++;
+        diff >>= 1;
     }
-    if(u == v)
+
+    if (u == v) {
         return u;
-    while(parent[u][0] != parent[v][0]) {
-        int j = 0;
-        while(parent[u][j] != parent[v][j])
-            j++;
-        j--;
-        u = parent[u][j];
-        v = parent[v][j];
+    }
+
+    while (parent[u][0] != parent[v][0]) {
+        int power = 0;
+        while (parent[u][power] != parent[v][power]) {
+            power++;
+        }
+        power--;
+        u = parent[u][power];
+        v = parent[v][power];
     }
     return parent[u][0];
 }
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
-    int n, m;
+    int n;
     cin >> n;
-    for(int i = 0; i < n - 1; ++i) {
+    for (int i = 0; i < n - 1; ++i) {
         int u, v;
         cin >> u >> v;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
+
     dfs(1, 0);
     preprocess(n);
+
+    int m;
     cin >> m;
-    for(int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; ++i) {
         int u, v;
         cin >> u >> v;
         cout << lca(u, v) << '\n';
