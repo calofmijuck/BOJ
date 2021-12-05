@@ -7,7 +7,7 @@ get_dirname () {
 
 if [ $# -eq 0 ];
 then
-    echo "Usage: ./make.sh [problem_number] [file_extension]"
+    echo "Usage: ./make.sh problem_number [file_extension]"
     exit
 fi
 
