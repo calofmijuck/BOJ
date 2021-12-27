@@ -4,7 +4,7 @@ using namespace std;
 typedef long long ll;
 typedef vector<vector<int>> Matrix;
 
-const int MOD = 1000000;
+const int MOD = 1000000007;
 
 Matrix matmul(Matrix A, Matrix B) {
     Matrix ret(A.size(), vector<int>(A.size()));
@@ -36,6 +36,6 @@ int main() {
 
     Matrix A = {{1, 1}, {1, 0}};
     Matrix result = pow(A, n);
-    cout << result[1][0];
+    cout << (ll) result[1][0] * result[0][0] % MOD;
     return 0;
 }

@@ -1,22 +1,19 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-typedef vector<vector<int> > Matrix;
+
 typedef long long ll;
+typedef vector<vector<int>> Matrix;
 
 const int MOD = 1000;
-Matrix mat;
+
 Matrix I;
 
 Matrix matmul(Matrix A, Matrix B) {
-    Matrix ret;
-    ret.resize(A.size());
-    for(int i = 0; i < ret.size(); ++i) {
-        ret[i].resize(A.size());
-    }
-    for(int i = 0; i < A.size(); ++i) {
-        for(int j = 0; j < B.size(); ++j) {
-            for(int k = 0; k < A.size(); ++k) {
+    Matrix ret(A.size(), vector<int>(A.size()));
+    for (int i = 0; i < (int) A.size(); ++i) {
+        for (int j = 0; j < (int) B.size(); ++j) {
+            for (int k = 0; k < (int) A.size(); ++k) {
                 ret[i][j] = (ret[i][j] + A[i][k] * B[k][j]) % MOD;
             }
         }
@@ -24,37 +21,46 @@ Matrix matmul(Matrix A, Matrix B) {
     return ret;
 }
 
-Matrix pow(Matrix mat, ll k) {
-    if(k == 0) {
+Matrix pow(Matrix m, ll k) {
+    if (k == 0) {
         return I;
-    } else if(k == 1) {
-        return mat;
-    } else if(k % 2 == 0) {
-        return pow(matmul(mat, mat), k / 2);
+    } else if (k == 1) {
+        return m;
+    } else if (k % 2 == 0) {
+        return pow(matmul(m, m), k / 2);
     } else {
-        return matmul(mat, pow(mat, k - 1));
+        return matmul(m, pow(m, k - 1));
+    }
+}
+
+void generate_identity_matrix(int n) {
+    I.resize(n);
+    for (int i = 0; i < n; ++i) {
+        I[i].resize(n);
+        I[i][i] = 1;
     }
 }
 
 int main() {
-    int n, x;
+    int n;
     ll k;
     cin >> n >> k;
-    mat.resize(n);
-    I.resize(n);
-    for(int i = 0; i < n; ++i) {
-        I[i].resize(n);
-        I[i][i] = 1;
-    }
-    for(int i = 0; i < n; ++i) {
-        for(int j = 0; j < n; ++j) {
-            cin >> x;
-            mat[i].push_back(x % MOD);
+
+    generate_identity_matrix(n);
+
+    Matrix matrix(n, vector<int>(n));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> matrix[i][j];
         }
     }
-    Matrix ret = pow(mat, k);
-    for(int i = 0; i < n; ++i) {
-        for(int j = 0; j < n; ++j) printf("%d ", ret[i][j] % MOD);
-        puts("");
+
+    Matrix result = pow(matrix, k);
+    for (vector<int> row : result) {
+        for (int e : row) {
+            cout << e % MOD << ' ';
+        }
+        cout << '\n';
     }
+    return 0;
 }
