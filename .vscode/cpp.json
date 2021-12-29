@@ -1,0 +1,43 @@
+{
+	"Problem Solving": {
+		"prefix": "ps",
+		"body": [
+			"#include <bits/stdc++.h>\nusing namespace std;\n",
+			"int main() {\n\tios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);\n\t$0\n\treturn 0;\n}"
+		],
+		"description": "Problem Solving Template"
+	},
+
+	"Competitive Programing": {
+		"prefix": "cp",
+		"body": [
+			"#include <bits/stdc++.h>\nusing namespace std;\n",
+			"typedef long long ll;\ntypedef unsigned long long ull;",
+			"typedef pair<int, int> pii;\ntypedef pair<ll, ll> pll;",
+			"typedef vector<int> vi;\ntypedef vector<ll> vl;",
+			"",
+			"#define pb(x) push_back(x)\n#define sz(x) (int)x.size()\n#define all(x) x.begin(), x.end()",
+			"",
+			"int main() {",
+			"\tios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);",
+			"\t$0\n\treturn 0;\n}"
+		],
+		"description": "Competitive Programing Template"
+	},
+
+	"Fast IO": {
+		"prefix": "fio",
+		"body": [
+			"ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);\n$0"
+		],
+		"description": "Fast IO"
+	},
+
+	"File IO": {
+		"prefix": "fre",
+		"body": [
+			"freopen(\"in\", \"r\", stdin);"
+		],
+		"description": "File IO"
+	}
+}
