@@ -1,5 +1,6 @@
 # editor config
 .vscode/*
+!.vscode/cpp.json
 
 # testing sources
 test.py
