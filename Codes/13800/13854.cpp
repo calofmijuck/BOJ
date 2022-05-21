@@ -6,24 +6,27 @@ typedef complex<double> Complex;
 
 #define MAX_N 50005
 
-int max_len = 0, sz[MAX_N];
-ll n, cnt[MAX_N];
-bool visited[MAX_N];
-vector<int> adj[MAX_N];
-vector<ll> curr, acc;
+ll prime_path_count = 0;
 
-bitset<MAX_N> prime;
+int subtree_size[MAX_N];
+
+vector<int> tree[MAX_N];
+vector<ll> accumulator, node_depth;
+
+bitset<MAX_N> prime, visited;
+vector<int> primes;
 
 // Sieve
-void sieve(int n = 50000) {
+void sieve(ll n = MAX_N - 1) {
     prime.flip();
     prime[0] = prime[1] = false;
-    for (ll p = 2; p * p <= n; ++p) {
+    for (ll p = 2; p <= n; ++p) {
         if (!prime[p]) {
             continue;
         }
 
-        for (int i = p * p; i <= n; i += p) {
+        primes.push_back(p);
+        for (ll i = p * p; i <= n; i += p) {
             prime[i] = false;
         }
     }
@@ -74,95 +77,108 @@ void multiply(const vector<ll>& a, const vector<ll>& b, vector<ll>& res) {
 }
 
 // Centroid
-int get_size(int v, int parent) {
-    sz[v] = 1;
-    for (int next : adj[v]) {
-        if (next == parent || visited[next])
+int get_subtree_size(int v, int parent = -1) {
+    subtree_size[v] = 1;
+    for (int next : tree[v]) {
+        if (next == parent || visited[next]) {
             continue;
-        sz[v] += get_size(next, v);
+        }
+
+        subtree_size[v] += get_subtree_size(next, v);
     }
-    return sz[v];
+    return subtree_size[v];
 }
 
 int find_centroid(int v, int parent, int lim) {
-    for (int next : adj[v]) {
-        if (next == parent || visited[next])
+    for (int next : tree[v]) {
+        if (next == parent || visited[next]) {
             continue;
-        if (sz[next] > lim)
+        }
+
+        if (subtree_size[next] > lim) {
             return find_centroid(next, v, lim);
+        }
     }
     return v;
 }
 
-void update(int v, int parent, int depth) {
-    max_len = max(depth, max_len);
-    ++curr[depth];
-    for (int next : adj[v]) {
-        if (next == parent || visited[next])
+int dfs(int v, int depth, int parent = -1) {
+    node_depth[depth]++;
+    int max_depth = depth;
+    for (int next : tree[v]) {
+        if (next == parent || visited[next]) {
             continue;
-        update(next, v, depth + 1);
-    }
-}
+        }
 
-bool compare(int a, int b) {
-    return sz[a] < sz[b];
+        max_depth = max(max_depth, dfs(next, depth + 1, v));
+    }
+    return max_depth;
 }
 
 void solve(int v) {
-    int lim = get_size(v, -1) / 2;
+    int lim = get_subtree_size(v) / 2;
     int centroid = find_centroid(v, -1, lim);
     visited[centroid] = true;
 
-    acc.clear();
-    acc.resize(sz[centroid] + 1);
-    acc[0] = 1;
+    accumulator.clear();
+    accumulator.resize(subtree_size[centroid] + 1);
+    accumulator[0] = 1;
 
-    for (int next : adj[centroid]) {
+    int max_previous_depth = 0;
+    for (int next : tree[centroid]) {
         if (visited[next]) {
             continue;
         }
 
-        max_len = 0;
-        curr.clear();
-        curr.resize(sz[next] + 1, 0);
-        update(next, centroid, 1);
+        node_depth.clear();
+        node_depth.resize(subtree_size[next] + 1);
 
-        vector<ll> res;
-        multiply(acc, curr, res);
-        int bound = min(MAX_N, (int) res.size());
-        for (int i = 1; i < bound; ++i)
-            cnt[i] += res[i];
-        if ((int) acc.size() <= max_len)
-            acc.resize(max_len + 1);
-        for (int i = 0; i <= max_len; ++i)
-            acc[i] += curr[i];
+        int max_depth = dfs(next, 1);
+        node_depth.resize(max_depth + 1);
+        max_previous_depth = max(max_depth, max_previous_depth);
+
+        vector<ll> result;
+        multiply(accumulator, node_depth, result);
+        for (int p : primes) {
+            if (p > max_depth + max_previous_depth || p >= (int) result.size()) {
+                break;
+            }
+
+            prime_path_count += result[p];
+        }
+
+        for (int i = 1; i <= max_depth; ++i) {
+            accumulator[i] += node_depth[i];
+        }
     }
 
-    for (int next : adj[centroid]) {
-        if (!visited[next])
+    for (int next : tree[centroid]) {
+        if (!visited[next]) {
             solve(next);
+        }
     }
 }
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+
+    sieve();
+
+    int n;
     cin >> n;
     for (int i = 0; i < n - 1; ++i) {
         int x, y;
         cin >> x >> y;
-        adj[x].push_back(y);
-        adj[y].push_back(x);
+        tree[x].push_back(y);
+        tree[y].push_back(x);
     }
+
     solve(1);
-    sieve();
-    ll ans = 0;
-    for (int i = 2; i < n; ++i) {
-        if (prime[i])
-            ans += cnt[i];
-    }
+
     cout << fixed;
     cout.precision(10);
+
     ll total = (ll) n * (n - 1) / 2;
-    cout << 1.0 * ans / total;
+    cout << 1.0 * prime_path_count / total;
     return 0;
 }
