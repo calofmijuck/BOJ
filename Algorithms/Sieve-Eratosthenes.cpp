@@ -1,26 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
-    int n;
-    scanf("%d", &n);
-    bool prime[n + 1];
-    memset(prime, true, sizeof(prime));
+#define MAX_N 10000
 
-    for(int p = 2; p * p <= n; p++) {
-        if(prime[p] == true) {
-            for(int i = p * p; i <= n; i += p) {
-                prime[i] = false;
-            }
+bitset<MAX_N> prime;
+
+void sieve(int n = MAX_N) {
+    prime.flip();
+    prime[0] = prime[1] = false;
+    for (int p = 2; p * p <= n; ++p) {
+        if (!prime[p]) {
+            continue;
+        }
+
+        for (int i = p * p; i <= n; i += p) {
+            prime[i] = false;
+        }
+    }
+}
+
+vector<int> get_primes() {
+    sieve();
+
+    vector<int> primes;
+    for (int p = 2; p <= MAX_N; ++p) {
+        if (prime[p]) {
+            primes.push_back(p);
         }
     }
 
-    int cnt = 0;
-    for(int i = 2; i < n; i++) {
-        if(prime[i]) {
-            cnt++;
-        }
-    }
-    printf("%d", cnt);
-    return 0;
+    return primes;
 }
