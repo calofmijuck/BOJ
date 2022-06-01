@@ -1,16 +1,26 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-int cnt[10];
+int counter[10];
+
+void count_digits(int number) {
+    while (number > 0) {
+        int digit = number % 10;
+        counter[digit]++;
+
+        number /= 10;
+    }
+}
 
 int main() {
-    int a, b, c, prod;
-    scanf("%d %d %d", &a, &b, &c);
-    prod = a * b * c;
-    while(prod > 0) {
-        cnt[prod % 10]++;
-        prod /= 10;
+    int a, b, c;
+    cin >> a >> b >> c;
+
+    int product = a * b * c;
+    count_digits(product);
+
+    for (int i = 0; i < 10; ++i) {
+        cout << counter[i] << '\n';
     }
-    for(int i = 0; i < 10; ++i) printf("%d\n", cnt[i]);
     return 0;
 }
