@@ -11,12 +11,16 @@ Test.java
 submit.py
 submit.cpp
 Main.java
+submit.rs
 
 # compiled files
+target/
 submit
 *.out
 *.exe
 *.class
+submit
+Cargo.lock
 
 # input / output files
 input.txt
