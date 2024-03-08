@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+using dtype = int;
 using base = complex<double>;
 
 void fft(vector<base>& a, bool inv) {
@@ -31,7 +32,7 @@ void fft(vector<base>& a, bool inv) {
     }
 }
 
-void multiply(const vector<int>& a, const vector<int>& b, vector<int>& res) {
+void multiply(const vector<dtype>& a, const vector<dtype>& b, vector<dtype>& res) {
     vector<base> fa(a.begin(), a.end()), fb(b.begin(), b.end());
     int n = 1;
     while (n < max(a.size(), b.size()))
@@ -43,5 +44,5 @@ void multiply(const vector<int>& a, const vector<int>& b, vector<int>& res) {
         fa[i] *= fb[i];
     fft(fa, true);
     for (int i = 0; i < n; i++)
-        res[i] = int(fa[i].real() + (fa[i].real() > 0 ? 0.5 : -0.5));
+        res[i] = dtype(fa[i].real() + (fa[i].real() > 0 ? 0.5 : -0.5));
 }
